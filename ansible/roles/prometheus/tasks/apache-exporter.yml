@@ -27,7 +27,7 @@
     group: "{{apache_exporter.group}}"
     keep_newer: yes
   notify:
-    - restart apache-exporter
+    - restart apache exporter
 
 - name: create systemd file
   template:
@@ -37,7 +37,7 @@
     owner: "{{apache_exporter.user}}"
     group: "{{apache_exporter.group}}"
   notify:
-    - restart apache_exporter
+    - restart apache exporter
 
 - name: configure service
   systemd:

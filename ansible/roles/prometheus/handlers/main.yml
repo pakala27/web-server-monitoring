@@ -4,7 +4,7 @@
     state: restarted
     daemon_reload: yes
 
-- name: restart apache_exporter
+- name: restart apache exporter
   systemd:
     name: "{{apache_exporter.systemd.service_name}}"
     state: restarted

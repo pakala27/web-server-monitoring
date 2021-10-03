@@ -62,6 +62,16 @@
     ## from https://grafana.com/grafana/dashboards/1860
     - "node-exporter"
 
+- name: create Grafana systemd file
+  template:
+    src: grafana.service.j2
+    dest: "{{grafana.systemd.file}}"
+    mode: 0640
+    owner: "{{grafana.user}}"
+    group: "{{grafana.group}}"
+  notify:
+    - restart node exporter
+
 - name: configure service
   systemd:
     name: "{{grafana.systemd.service_name}}"

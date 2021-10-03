@@ -10,6 +10,14 @@
     groups: "{{apache_exporter.group}}"
     append: yes
 
+- name: create apache_exporter local directory
+  file:
+    path: "{{ apache_exporter.local_path }}"
+    owner: "{{ apache_exporter.user }}"
+    group: "{{ apache_exporter.group }}"
+    state: directory
+    mode: 0755
+
 - name: unarchive prometheus apache_exporter (with download)
   unarchive:
     src: "https://github.com/Lusitaniae/apache_exporter/releases/download/v{{apache_exporter.version}}/apache_exporter-{{apache_exporter.version}}.linux-amd64.tar.gz"

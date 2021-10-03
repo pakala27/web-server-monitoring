@@ -27,7 +27,6 @@
     group: "{{node_exporter.group}}"
     keep_newer: yes
     mode: 0755
-  when: not on_prem
   notify:
     - restart node exporter
 

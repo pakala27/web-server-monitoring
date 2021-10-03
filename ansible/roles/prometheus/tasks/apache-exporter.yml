@@ -18,7 +18,6 @@
     owner: "{{apache_exporter.user}}"
     group: "{{apache_exporter.group}}"
     keep_newer: yes
-  when: not on_prem
   notify:
     - restart apache-exporter
 

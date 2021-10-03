@@ -42,7 +42,6 @@
     owner: "{{prometheus.user}}"
     group: "{{prometheus.group}}"
     keep_newer: yes
-  when: not on_prem
   notify:
     - restart prometheus
 

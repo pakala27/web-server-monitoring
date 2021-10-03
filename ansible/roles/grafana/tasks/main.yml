@@ -62,15 +62,13 @@
     ## from https://grafana.com/grafana/dashboards/1860
     - "node-exporter"
 
-- name: create Grafana systemd file
-  template:
-    src: grafana.service.j2
-    dest: "{{grafana.systemd.file}}"
-    mode: 0640
+- name: create plugins directory
+  file:
+    path: "{{grafana.data_dir}}/plugins"
     owner: "{{grafana.user}}"
     group: "{{grafana.group}}"
-  notify:
-    - restart node exporter
+    state: directory
+    mode: 0750
 
 - name: configure service
   systemd:

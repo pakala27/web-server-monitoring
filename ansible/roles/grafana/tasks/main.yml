@@ -21,7 +21,7 @@
 
 - name: create grafana config
   template:
-    src: grafana_conf_defaults.ini.j2
+    src: grafana_conf.ini.j2
     dest: "{{ grafana.conf_file }}"
     mode: 0740
     owner: "{{grafana.user}}"

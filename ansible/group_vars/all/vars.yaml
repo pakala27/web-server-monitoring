@@ -1,0 +1,63 @@
+ansible_connection: ssh
+ansible_become: yes
+
+prometheus:
+  prometheus_version: "2.30.2"
+  node_exporter_version: "1.1.2"
+  port: 9090
+  user: prometheus
+  group: prometheus
+  systemd:
+    enabled: yes
+    state: started
+    service_name: prometheus
+    file: /usr/lib/systemd/system/prometheus.service
+  local_path: /usr/lib/prometheus
+  data_dir: /var/lib/prometheus_data
+  log_dir: /var/log/prometheus
+
+apache_exporter:
+  version: "0.10.1"
+  port: 9117
+  user: apache_exporter
+  group: apache_exporter
+  systemd:
+    enabled: yes
+    state: started
+    service_name: apache_exporter
+  local_path: /usr/lib/apache_exporter
+  data_dir: /var/lib/apache_exporter_data
+  log_dir: /var/log/apache_exporter
+  service: apache_exporter.service
+  systemd_file: /usr/lib/systemd/system/apache_exporter.service
+
+node_exporter:
+  version: "1.2.2"
+  port: 9100
+  user: node_exporter
+  group: node_exporter
+  systemd:
+    enabled: yes
+    state: started
+    service_name: node_exporter
+  local_path: /usr/lib/node_exporter
+  data_dir: /var/lib/node_exporter_data
+  log_dir: /var/log/node_exporter
+  service: node_exporter.service
+  systemd_file: /usr/lib/systemd/system/node_exporter.service
+
+grafana:
+  port: 3000
+  user: grafana
+  group: grafana
+  conf_dir: /etc/grafana
+  conf_file: /etc/grafana/grafana.ini
+  log_dir: /var/log/grafana
+  log_file: /var/log/grafana/grafana.log
+  data_dir: /var/lib/grafana
+  home_dir: /usr/share/grafana
+  systemd:
+    enabled: yes
+    state: started
+    service_name: grafana-server
+    file: /usr/lib/systemd/system/grafana-server.service

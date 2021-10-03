@@ -1,0 +1,15 @@
+all:
+preflight:
+  hosts:
+    192.168.1.10:
+    192.168.1.20:
+    192.168.1.30:
+monitoring:
+  hosts:
+    192.168.1.30:
+devops:
+  hosts:
+    192.168.1.20:
+web:
+  hosts:
+    192.168.1.10:

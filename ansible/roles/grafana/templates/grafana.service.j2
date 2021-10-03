@@ -1,0 +1,17 @@
+[Unit]
+Description=Grafana Server
+Documentation=http://docs.grafana.org
+After=network-online.target
+
+[Service]
+Type=simple
+User={{ grafana.user }}
+Group={{ grafana.group }}
+WorkingDirectory={{ grafana.home_path }}/grafana-{{grafana.version}}
+ExecStart={{ grafana.home_path }}/grafana-{{grafana.version}}/bin/grafana-server
+TimeoutStopSec=180
+Restart=always
+RestartSec=0s
+
+[Install]
+WantedBy=multi-user.target

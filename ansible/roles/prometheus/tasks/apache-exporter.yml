@@ -1,0 +1,40 @@
+- name: create group
+  group:
+    name: "{{apache_exporter.group}}"
+
+- name: create user
+  user:
+    name: "{{apache_exporter.user}}"
+    comment: "apache_exporter User"
+    system: yes
+    groups: "{{apache_exporter.group}}"
+    append: yes
+
+- name: unarchive prometheus apache_exporter (with download)
+  unarchive:
+    src: "https://github.com/Lusitaniae/apache_exporter/releases/download/v{{apache_exporter.apache_exporter_version}}/apache_exporter-{{apache_exporter.apache_exporter_version}}.linux-amd64.tar.gz"
+    dest: "{{ apache_exporter.local_path }}"
+    remote_src: yes
+    owner: "{{apache_exporter.user}}"
+    group: "{{apache_exporter.group}}"
+    keep_newer: yes
+  when: not on_prem
+  notify:
+    - restart apache-exporter
+
+- name: create systemd file
+  template:
+    src: apache_exporter.service.j2
+    dest: "{{apache_exporter.systemd_file}}"
+    mode: 0640
+    owner: "{{apache_exporter.user}}"
+    group: "{{apache_exporter.group}}"
+  notify:
+    - restart apache_exporter
+
+- name: configure service
+  systemd:
+    name: "{{apache_exporter.service}}"
+    enabled: "{{apache_exporter.systemd.enabled}}"
+    state: "{{apache_exporter.systemd.state}}"
+    daemon_reload: yes

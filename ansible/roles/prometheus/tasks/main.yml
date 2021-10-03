@@ -1,0 +1,85 @@
+- name: create group
+  group:
+    name: "{{prometheus.group}}"
+
+- name: create user
+  user:
+    name: "{{prometheus.user}}"
+    comment: "Prometheus User"
+    system: yes
+    groups: "{{prometheus.group}}"
+    append: yes
+
+- name: create prometheus data directory
+  file:
+    path: "{{ prometheus.data_dir }}"
+    owner: "{{prometheus.user}}"
+    group: "{{prometheus.group}}"
+    state: directory
+    mode: 0755
+
+- name: create prometheus log directory
+  file:
+    path: "{{ prometheus.log_dir }}"
+    owner: "{{prometheus.user}}"
+    group: "{{prometheus.group}}"
+    state: directory
+    mode: 0755
+
+- name: create prometheus local directory
+  file:
+    path: "{{ prometheus.local_path }}"
+    owner: "{{ prometheus.user }}"
+    group: "{{ prometheus.group }}"
+    state: directory
+    mode: 0755
+  
+- name: unarchive prometheus (with download)
+  unarchive:
+    src: "https://github.com/prometheus/prometheus/releases/download/v{{prometheus.prometheus_version}}/prometheus-{{prometheus.prometheus_version}}.linux-amd64.tar.gz"
+    dest: "{{ prometheus.local_path }}"
+    remote_src: yes
+    owner: "{{prometheus.user}}"
+    group: "{{prometheus.group}}"
+    keep_newer: yes
+  when: not on_prem
+  notify:
+    - restart prometheus
+
+
+- name: create prometheus config
+  template:
+    src: prometheus.yml.j2
+    dest: "{{ prometheus.local_path }}/prometheus.yml"
+    mode: 0740
+    owner: "{{prometheus.user}}"
+    group: "{{prometheus.group}}"
+  notify:
+    - restart prometheus
+
+- name: create systemd file
+  template:
+    src: prometheus.service.j2
+    dest: "{{prometheus.systemd.file}}"
+    mode: 0640
+    owner: "{{prometheus.user}}"
+    group: "{{prometheus.group}}"
+  notify:
+    - restart prometheus
+  
+- name: configure service
+  systemd:
+    name: "{{prometheus.systemd.service_name}}"
+    enabled: "{{prometheus.systemd.enabled}}"
+    state: "{{prometheus.systemd.state}}"
+    daemon_reload: yes
+
+- meta: flush_handlers
+    
+- name: Install jq
+  yum:
+    name: 
+      - "jq"
+    state: latest
+
+

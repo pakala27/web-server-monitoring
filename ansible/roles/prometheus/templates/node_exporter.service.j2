@@ -1,0 +1,17 @@
+[Unit]
+Description=Prometheus Node Exporter
+Documentation=https://prometheus.io/docs/guides/node-exporter/
+After=network-online.target
+
+[Service]
+Type=simple
+User={{ prometheus.user }}
+Group={{ prometheus.group }}
+EnvironmentFile={{ prometheus.node_exporter_environment_file }}
+ExecStart={{ prometheus.local_path }}/node_exporter-{{prometheus.node_exporter_version}}.linux-amd64/node_exporter $OPTIONS
+TimeoutStopSec=180
+Restart=always
+RestartSec=0s
+
+[Install]
+WantedBy=multi-user.target

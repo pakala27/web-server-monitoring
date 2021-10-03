@@ -1,0 +1,22 @@
+[Unit]
+Description=apache_exporter
+Documentation=https://github.com/Lusitaniae/apache_exporter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User={{ apache_exporter.user }}
+Group={{ apache_exporter.group }}
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart={{ apache_exporter.local_path }}/apache_exporter \
+  --insecure \
+  --scrape_uri=http://localhost/server-status/?auto \
+  --telemetry.address=0.0.0.0:9117 \
+  --telemetry.endpoint=/metrics
+
+SyslogIdentifier=apache_exporter
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

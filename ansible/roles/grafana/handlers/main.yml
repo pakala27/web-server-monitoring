@@ -1,0 +1,5 @@
+- name: restart grafana
+  systemd:
+    name: "{{grafana.systemd.service_name}}"
+    state: restarted
+    daemon_reload: yes

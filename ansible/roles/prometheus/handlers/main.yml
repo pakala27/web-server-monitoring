@@ -1,0 +1,21 @@
+- name: restart node exporter
+  systemd:
+    name: "{{node_exporter.systemd.service_name}}"
+    state: restarted
+    daemon_reload: yes
+
+- name: restart apache_exporter
+  systemd:
+    name: "{{apache_exporter.systemd.service_name}}"
+    state: restarted
+    daemon_reload: yes
+
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: restart prometheus
+  systemd:
+    name: "{{prometheus.systemd.service_name}}"
+    state: restarted
+    daemon_reload: yes

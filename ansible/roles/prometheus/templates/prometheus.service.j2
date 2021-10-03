@@ -1,0 +1,27 @@
+# /etc/systemd/system/prometheus.service
+[Unit]
+Description=Prometheus Server
+Documentation=https://prometheus.io/docs/introduction/overview/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User={{ prometheus.user }}
+Group={{ prometheus.group }}
+ExecStart={{ prometheus.local_path }}/prometheus-{{prometheus.prometheus_version}}.linux-amd64/prometheus \
+          --config.file={{ prometheus.local_path }}/prometheus.yml \
+          --storage.tsdb.path={{ prometheus.data_dir }} \
+          --storage.tsdb.retention.size=50GB \
+          --storage.tsdb.retention.time=180d \
+          --web.console.templates={{ prometheus.local_path }}/prometheus-{{prometheus.prometheus_version}}.linux-amd64/consoles \
+          --web.console.libraries={{ prometheus.local_path }}/prometheus-{{prometheus.prometheus_version}}.linux-amd64/console_libraries \
+          --web.external-url=https://kafka.services.{{ domain }}/prometheus \
+          --log.level=debug \
+          --log.format=logfmt
+TimeoutStopSec=180
+Restart=always
+RestartSec=0s
+
+[Install]
+WantedBy=multi-user.target

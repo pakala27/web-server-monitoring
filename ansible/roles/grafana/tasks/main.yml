@@ -1,0 +1,72 @@
+- name: grafana create group
+  group:
+    name: "{{grafana.group}}"
+
+- name: grafana create user
+  user:
+    name: "{{grafana.user}}"
+    comment: "grafana User"
+    system: yes
+    group: "{{grafana.group}}"
+
+- name: update ansible_facts.packages
+  package_facts:
+    manager: "auto"
+
+- name: Install Grafana
+  yum:
+    name: grafana
+    state: latest
+  when: "'grafana' not in ansible_facts.packages"
+
+- name: create grafana config
+  template:
+    src: grafana_conf.ini.j2
+    dest: "{{ grafana.conf_file }}"
+    mode: 0740
+    owner: "{{grafana.user}}"
+    group: "{{grafana.group}}"
+  notify:
+    - restart grafana
+
+- name: create prometheus datasource config file
+  template:
+    src: datasource-prometheus.yml.j2
+    dest: "{{ grafana.conf_dir }}/provisioning/datasources/prometheus.yml"
+    mode: 0740
+    owner: "{{grafana.user}}"
+    group: "{{grafana.group}}"
+  notify:
+    - restart grafana
+
+- name: create dashboard default provider file
+  template:
+    src: dashboard-default-provider.yml.j2
+    dest: "{{ grafana.conf_dir }}/provisioning/dashboards/default-provider.yml"
+    mode: 0740
+    owner: "{{grafana.user}}"
+    group: "{{grafana.group}}"
+  notify:
+    - restart grafana
+
+- name: create dashboards
+  copy:
+    src: dashboard-{{item}}.json
+    dest: "{{ grafana.conf_dir }}/provisioning/dashboards/{{item}}.json"
+    mode: 0740
+    owner: "{{grafana.user}}"
+    group: "{{grafana.group}}"
+  loop:
+    ## from https://grafana.com/grafana/dashboards/3894
+    - "apache"
+    ## from https://grafana.com/grafana/dashboards/1860
+    - "node-exporter"
+
+- name: configure service
+  systemd:
+    name: "{{grafana.systemd.service_name}}"
+    enabled: "{{grafana.systemd.enabled}}"
+    state: "{{grafana.systemd.state}}"
+    daemon_reload: yes
+
+- meta: flush_handlers

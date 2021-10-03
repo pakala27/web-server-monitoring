@@ -1,0 +1,33 @@
+# Download and configure node_exporter on all servers
+- hosts: preflight
+  gather_facts: no
+  tasks:
+  - import_role:
+      name: prometheus
+      tasks_from: node-exporter
+    tags:
+      - node-exporter
+
+# Download and configure apache_exporter on web server
+- hosts: web
+  gather_facts: no
+  tasks:
+  - import_role:
+      name: prometheus
+      tasks_from: apache-exporter
+    tags:
+      - apache-exporter
+
+# Install and configure Prometheus and Grafana
+- hosts: monitoring
+  tasks:
+  - name: "Install Prometheus"
+    import_role:
+      name: prometheus
+    tags:
+      - prometheus
+  - name: "Install Grafana"
+    import_role:
+      name: grafana
+    tags:
+      - grafana

@@ -1,0 +1,49 @@
+- name: create node_exporter group
+  group:
+    name: "{{node_exporter.group}}"
+
+- name: create node_exporter user
+  user:
+    name: "{{node_exporter.user}}"
+    comment: "node_exporter User"
+    system: yes
+    groups: "{{node_exporter.group}}"
+    append: yes
+
+- name: create node_exporter directory
+  file:
+    path: "{{ node_exporter.local_path }}"
+    owner: "{{ node_exporter.user }}"
+    group: "{{ node_exporter.group }}"
+    state: directory
+    mode: 0755
+
+- name: unarchive prometheus node exporter (with download)
+  unarchive:
+    src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter.version }}/node_exporter-{{ node_exporter.version }}.linux-amd64.tar.gz"
+    dest: "{{ node_exporter.local_path }}"
+    remote_src: yes
+    owner: "{{node_exporter.user}}"
+    group: "{{node_exporter.group}}"
+    keep_newer: yes
+    mode: 0755
+  when: not on_prem
+  notify:
+    - restart node exporter
+
+- name: create node exporter systemd file
+  template:
+    src: node_exporter.service.j2
+    dest: "{{node_exporter.systemd_file}}"
+    mode: 0640
+    owner: "{{node_exporter.user}}"
+    group: "{{node_exporter.group}}"
+  notify:
+    - restart node exporter
+
+- name: configure service
+  systemd:
+    name: "{{node_exporter.service}}"
+    enabled: "{{node_exporter.systemd.enabled}}"
+    state: "{{node_exporter.systemd.state}}"
+    daemon_reload: yes

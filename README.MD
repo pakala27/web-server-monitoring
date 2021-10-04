@@ -29,15 +29,15 @@ cd <repo-dir>/ansible;
 ansible-playbook -i hosts-monitoring.yml playbook-monitoring.yml -u ansible;
 
 ## Above playbook does following tasks
-#    - Download and configure Prometheus Node Exporter on Web and Monitoring systems
-#    - Download and configure Apache Exporter on web system
-#    - Download and configure Prometheus on Monitoring system
-#    - Install and configure Grafana on Monitoring system
-#    - Create Datasource and Dashboards automatically
+     - Download and configure Prometheus Node Exporter on Web and Monitoring systems
+     - Download and configure Apache Exporter on web system
+     - Download and configure Prometheus on Monitoring system
+     - Install and configure Grafana on Monitoring system
+     - Create Datasource and Dashboards automatically
 
 
 ### Further improvements
 ## Extend the infra provisioning with Terraform to acheive below.
-#    - Handling terraform state (use s3 or terraform cloud to keep the state files to make it secure)
-#    - Create ALB and target groups to hide web application under ALB for security and load bancing
-#    - May be another better way to make SSH connections from DevOps to other systems for running Ansible #      Playbooks. ex. Integrations with IAM etc.
+     - Handling terraform state (use s3 or terraform cloud to keep the state files to make it secure)
+     - Create ALB and target groups to hide web application under ALB for security and load bancing
+     - May be another better way to make SSH connections from DevOps to other systems for running Ansible  Playbooks. ex. Integrations with IAM etc.

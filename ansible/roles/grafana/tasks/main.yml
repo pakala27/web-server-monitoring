@@ -59,8 +59,6 @@
   loop:
     ## from https://grafana.com/grafana/dashboards/3894
     - "apache"
-    ## from https://grafana.com/grafana/dashboards/1860
-    - "node-exporter"
 
 - name: create plugins directory
   file:
